@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Projects by aerospace engineer Elio Cusi: hierarchical GNC, 6-DOF flight simulation, and hypersonic waverider design.">
+<title>Elio Cusi Projects</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: one column of project sheets, each pairing a write-up with a drafting-style figure and a strip of the run's real parameters. */
+:root {
+  --bg: #EDF0F3;
+  --surface: #F8FAFB;
+  --ink: #14212E;
+  --muted: #52606E;
+  --line: #C3CCD5;
+  --accent: #B8400E;
+  --plot: #1F5FA8;
+  --plot-soft: rgba(31, 95, 168, 0.12);
+  --display: "Saira Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1A26; --surface: #152232; --ink: #E4EAF0; --muted: #94A2B1;
+    --line: #2C3D50; --accent: #F2994A; --plot: #72B3F0; --plot-soft: rgba(114, 179, 240, 0.14);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1A26; --surface: #152232; --ink: #E4EAF0; --muted: #94A2B1;
+  --line: #2C3D50; --accent: #F2994A; --plot: #72B3F0; --plot-soft: rgba(114, 179, 240, 0.14);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 66rem;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: clamp(32px, 6vw, 72px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 6vw, 72px);
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Intro */
+.intro { display: flex; flex-direction: column; gap: 16px; }
+.intro h1 { font-size: clamp(2.75rem, 9vw, 5rem); letter-spacing: -0.01em; text-transform: uppercase; }
+.intro .lede { max-width: 62ch; font-size: 1.125rem; }
+.fields { display: flex; flex-wrap: wrap; gap: 6px 20px; padding: 0; margin: 0; list-style: none; }
+.fields li { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); }
+.fields li::before { content: "/ "; color: var(--accent); }
+
+/* Projects */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+.section-head h2 { font-size: 1.75rem; text-transform: uppercase; letter-spacing: 0.02em; }
+.projects { display: flex; flex-direction: column; gap: 24px; }
+.sheets { display: flex; flex-direction: column; }
+.sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 48px);
+  padding-block: clamp(28px, 4vw, 44px);
+  border-bottom: 1px solid var(--line);
+}
+.sheet-text { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.sheet h3 { font-size: clamp(1.75rem, 4vw, 2.375rem); }
+.sheet .sub { color: var(--muted); font-size: 1rem; }
+.sheet ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 8px; max-width: 60ch; }
+.sheet li::marker { color: var(--accent); }
+
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0; margin: 6px 0 0; border-top: 1px solid var(--line); }
+.specs div { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.specs dt { font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.specs dd { margin: 2px 0 0; font-family: var(--mono); font-weight: 500; font-size: 1rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.specs dd.key { color: var(--accent); }
+
+figure { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.plate { background: var(--surface); border: 1px solid var(--line); padding: 12px; }
+.plate svg { display: block; width: 100%; height: auto; }
+figcaption { display: flex; flex-direction: column; gap: 6px; font-size: 0.8125rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 0; margin: 0; list-style: none; font-family: var(--mono); font-size: 0.75rem; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.legend svg { width: 26px; height: 10px; flex: none; }
+
+/* SVG ink */
+.s-grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.s-frame { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+.s-plot { stroke: var(--plot); stroke-width: 1.5; fill: none; }
+.s-plot-dash { stroke: var(--plot); stroke-width: 1.25; fill: none; stroke-dasharray: 5 4; }
+.s-zone { stroke: var(--plot); stroke-width: 1.25; fill: var(--plot-soft); }
+.s-body { stroke: var(--plot); stroke-width: 1.5; fill: var(--plot-soft); stroke-linejoin: round; }
+.s-ink-dash { stroke: var(--muted); stroke-width: 1.25; fill: none; stroke-dasharray: 3 4; }
+.s-accent { stroke: var(--accent); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.s-accent-thin { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.f-accent { fill: var(--accent); stroke: none; }
+.f-plot { fill: var(--plot); stroke: none; }
+.f-ink { fill: var(--ink); stroke: none; }
+.s-text { fill: var(--muted); stroke: none; font-family: var(--mono); font-size: 12px; }
+.s-text-strong { fill: var(--ink); stroke: none; font-family: var(--mono); font-size: 13px; font-weight: 500; }
+
+.plate img { display: block; width: 100%; height: auto; }
+.sheet-wide { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); align-items: start; }
+figcaption strong { color: var(--ink); font-weight: 600; }
+.table-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); padding: 4px 12px; }
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 6px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child { text-align: left; }
+thead th { font-size: 0.6875rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tbody th { font-weight: 500; }
+tr.total th, tr.total td { border-bottom: 0; font-weight: 500; color: var(--accent); }
+.specs sup { font-size: 0.7em; line-height: 0; }
+@media (max-width: 900px) { .sheet-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sheet-wide > figure:last-child { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .sheet-wide { grid-template-columns: minmax(0, 1fr); } }
+
+/* Live field */
+.field { display: flex; flex-direction: column; gap: 10px; }
+.field canvas { display: block; width: 100%; height: clamp(170px, 26vw, 260px); background: var(--surface); border: 1px solid var(--line); }
+.field-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 24px; font-size: 0.8125rem; color: var(--muted); }
+.field-meta .stat { font-family: var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* Buttons */
+.btn { font: 500 0.8125rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--bg); background: var(--ink); border: 1px solid var(--ink); padding: 10px 16px; cursor: pointer; align-self: flex-start; display: inline-flex; gap: 10px; align-items: center; transition: transform 160ms ease, background 160ms ease; }
+.btn .arrow { transition: transform 160ms ease; }
+.btn:hover { background: var(--accent); border-color: var(--accent); }
+.btn:hover .arrow { transform: translateX(4px); }
+
+/* Motion */
+.plate img { transition: transform 300ms ease; }
+.plate { overflow: hidden; }
+.plate:hover img { transform: scale(1.03); }
+.flow { stroke-dasharray: 8 6; animation: flow 1.1s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -14; } }
+@keyframes rise { from { transform: translateY(14px); } to { transform: none; } }
+.intro > * { animation: rise 600ms cubic-bezier(.2,.7,.2,1) both; }
+.intro > :nth-child(2) { animation-delay: 70ms; }
+.intro > :nth-child(3) { animation-delay: 140ms; }
+.intro > :nth-child(4) { animation-delay: 210ms; }
+@media (prefers-reduced-motion: reduce) {
+  .flow, .intro > * { animation: none; }
+  .plate img, .btn, .btn .arrow { transition: none; }
+  .plate:hover img { transform: none; }
+}
+
+/* Paper reader */
+dialog.paper { width: min(100% - 24px, 58rem); max-width: none; height: calc(100% - 24px); max-height: none; padding: 0; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+dialog.paper::backdrop { background: rgba(8, 14, 22, 0.72); }
+.paper-inner { display: flex; flex-direction: column; height: 100%; }
+.paper-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.paper-head h2 { font-size: 1.25rem; min-width: 0; }
+.paper-pages { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 12px; }
+.paper-pages img { display: block; width: 100%; height: auto; background: #fff; border: 1px solid var(--line); }
+
+/* Replays */
+.replay { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.replay-body { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 32px); align-items: start; }
+.replay video { display: block; width: 100%; aspect-ratio: 960 / 824; object-fit: contain; background: #0e1018; }
+.replay-list { display: flex; flex-direction: column; border-top: 1px solid var(--line); min-width: 0; }
+.replay-list button { display: flex; flex-direction: column; gap: 4px; text-align: left; font: inherit; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 11px 12px; cursor: pointer; }
+.replay-list button:hover { background: var(--surface); }
+.replay-list .t { font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+.replay-list .d { display: none; font-size: 0.8125rem; line-height: 1.5; opacity: 0.8; }
+.replay-list button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.replay-list button[aria-pressed="true"] .d { display: block; }
+@media (max-width: 760px) { .replay-body { grid-template-columns: minmax(0, 1fr); } }
+
+.status { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; padding: 2px 8px; border: 1px solid var(--accent); color: var(--accent); font-weight: 500; white-space: nowrap; }
+.status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .status .dot { animation: none; } }
+
+/* Background */
+.background { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 28px 40px; }
+.background > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.background h3 { font-size: 1.375rem; }
+.background p { color: var(--muted); font-size: 0.9375rem; }
+
+/* Contact */
+.contact { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; border-top: 2px solid var(--ink); padding-top: 20px; }
+.contact .addr { font-family: var(--mono); font-size: 0.9375rem; user-select: all; overflow-wrap: anywhere; }
+.contact-item { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+button.copy {
+  font: 500 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink); background: transparent; border: 1px solid var(--ink);
+  padding: 6px 10px; cursor: pointer;
+}
+button.copy:hover { background: var(--ink); color: var(--bg); }
+
+@media (max-width: 760px) {
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="intro">
+    <p class="label">Aerospace engineer · Hyattsville, MD</p>
+    <h1>Elio Samuel Cusi</h1>
+    <p class="lede">I build modeling and simulation tools for Navy programs at the Naval Surface Warfare Center Carderock Division, and I am finishing a Master of Engineering in aerospace at the University of Maryland. These are projects in guidance, flight dynamics and hypersonic design.</p>
+    <ul class="fields">
+      <li>Guidance, navigation and control</li>
+      <li>Motion planning</li>
+      <li>6-DOF simulation</li>
+      <li>Survivability analysis</li>
+    </ul>
+  </header>
+
+  <section class="field" aria-label="Live sketch of the radar-field problem">
+    <canvas id="field" role="img" aria-label="Animation: a vehicle steers from left to right around orbiting circular no-fly zones toward a goal, leaving a trail."></canvas>
+    <div class="field-meta">
+      <span>A toy version of the radar-field problem from my GNC project, running live: a vehicle steers around orbiting no-fly zones toward a goal. A sketch, not the paper's simulation.</span>
+      <span class="stat" id="field-stat">Trial 1 in flight</span>
+    </div>
+  </section>
+
+  <section class="projects" aria-labelledby="projects-h">
+    <div class="section-head">
+      <h2 id="projects-h">Projects</h2>
+      <span class="label">3 on file</span>
+    </div>
+
+    <div class="sheets">
+
+      <article class="sheet">
+        <div class="sheet-text">
+          <p class="label">Guidance and motion planning</p>
+          <h3>Hierarchical GNC Framework</h3>
+          <p class="sub">RRT* global planning coupled with MPPI control for autonomous navigation through radar-defended airspace.</p>
+          <ul>
+            <li>Designed a two-layer architecture: RRT* plans each global reference path offline, and MPPI re-optimizes control every 0.5 s to track it through moving threats.</li>
+            <li>Simulated three missiles crossing a field of 15 orbiting radars and 3 patrol radars while evading 3 proportional-navigation interceptors.</li>
+            <li>Implemented time-indexed collision checking in RRT* and stochastic MPPI control with adaptive noise scaling and dynamic cost weights.</li>
+            <li>Found that RRT* produced a valid path in 91.67% of cases, so most failures came from execution and interception, not global planning.</li>
+            <li>Identified terminal funneling as the dominant failure mode and proposed RRT-X replanning as the next improvement.</li>
+          </ul>
+          <dl class="specs">
+            <div><dt>Mission success</dt><dd class="key" data-count="63.67" data-dec="2" data-suffix="%">63.67%</dd></div>
+            <div><dt>Monte Carlo trials</dt><dd data-count="300">300</dd></div>
+            <div><dt>RRT* path success</dt><dd data-count="91.67" data-dec="2" data-suffix="%">91.67%</dd></div>
+            <div><dt>Rollouts per update</dt><dd data-count="1024">1,024</dd></div>
+            <div><dt>Horizon</dt><dd>50 steps, 25 s</dd></div>
+            <div><dt>Operational area</dt><dd>5,500 × 5,000 m</dd></div>
+          </dl>
+          <button class="btn" type="button" data-open-paper>Read the paper <span class="arrow" aria-hidden="true">→</span></button>
+        </div>
+        <figure>
+          <div class="plate">
+            <img src="final-sim.webp" width="1090" height="982" alt="Simulation plot of three missile trajectories crossing a field of circular radar no-fly zones. All three are intercepted near the goal on the right side, where interceptor paths from three corner bases converge.">
+          </div>
+          <figcaption>
+            <span><strong>Terminal funneling.</strong> Final combined simulation at t = 47.5 s. All three missiles clear the radar field, then are intercepted near the goal as interceptors converge on the shared approach corridor.</span>
+          </figcaption>
+        </figure>
+        <div class="replay">
+          <p class="label">Simulation replays · recorded from the project</p>
+          <div class="replay-body">
+            <div class="plate">
+              <video id="replay-video" src="sim-rrt.mp4" poster="sim-rrt-poster.webp" controls muted loop playsinline preload="metadata" aria-label="Recorded simulation replay"></video>
+            </div>
+            <div class="replay-list" role="group" aria-label="Choose a replay">
+            <button type="button" data-clip="sim-rrt" aria-pressed="true"><span class="t">Phase 1 · RRT* planning</span><span class="d">Three trees grow from the start points and settle on a reference path for each missile.</span></button>
+            <button type="button" data-clip="sim-mppi" aria-pressed="false"><span class="t">Phase 2 · MPPI control</span><span class="d">MPPI flies the planned paths and corrects for radar motion. Dashed lines are the plan, solid lines the flown track.</span></button>
+            <button type="button" data-clip="sim-final" aria-pressed="false"><span class="t">Combined run</span><span class="d">Both layers together, with interceptors launching from the corner bases. In this run all three missiles are intercepted, two of them while circling the goal.</span></button>
+            <button type="button" data-clip="sim-m1" aria-pressed="false"><span class="t">Missile 1 close-up</span><span class="d">Chase view following Missile 1 under MPPI control.</span></button>
+            <button type="button" data-clip="sim-m2" aria-pressed="false"><span class="t">Missile 2 close-up</span><span class="d">Chase view following Missile 2 under MPPI control.</span></button>
+            <button type="button" data-clip="sim-m3" aria-pressed="false"><span class="t">Missile 3 close-up</span><span class="d">Chase view following Missile 3 under MPPI control.</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-wide">
+          <figure>
+            <div class="plate">
+              <img src="rrt-tree.webp" width="1066" height="953" loading="lazy" alt="Early RRT* tree expansion from three missile start points on the left toward a common goal on the right, across a workspace of radar no-fly zones and alert zones.">
+            </div>
+            <figcaption><span>RRT* tree expansion at t = 0.8 s. Red regions are radar no-fly zones, yellow rings are alert zones, and dashed orange lines are patrol-radar sweep paths.</span></figcaption>
+          </figure>
+          <figure>
+            <div class="plate">
+              <img src="rrt-paths.webp" width="1073" height="948" loading="lazy" alt="Completed RRT* reference paths for three missiles threading between radar zones toward the goal.">
+            </div>
+            <figcaption><span>Completed RRT* reference paths at t = 34.8 s. Flown without online control, all three are intercepted near the goal, which is the case for adding MPPI.</span></figcaption>
+          </figure>
+          <figure>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th scope="col">Missile</th><th scope="col">Success</th><th scope="col">Time, s</th><th scope="col">Fallback</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">M1</th><td>85.0%</td><td>45.69</td><td>0.136</td></tr>
+                  <tr><th scope="row">M2</th><td>41.0%</td><td>42.60</td><td>0.153</td></tr>
+                  <tr><th scope="row">M3</th><td>65.0%</td><td>41.82</td><td>0.159</td></tr>
+                  <tr class="total"><th scope="row">Overall</th><td>63.67%</td><td>43.71</td><td>0.150</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <figcaption><span>Per-missile results over 100 runs each. Time is the mean for successful trials. Fallback is the share of control steps handled by the backup controller. Kolmogorov-Smirnov tests found no significant difference in time or fallback use between missiles, which traces M2's lower rate to its approach geometry, not the controller.</span></figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-text">
+          <p class="label">Flight dynamics · MATLAB/Simulink <span class="status"><span class="dot" aria-hidden="true"></span>In progress</span></p>
+          <h3>6-DOF Flight Simulation</h3>
+          <p class="sub">Nonlinear aircraft simulation built twice, once with Euler angles and once with quaternions.</p>
+          <ul>
+            <li>Developed nonlinear 6-DOF aircraft simulations integrating aerodynamic force and moment models and environmental effects.</li>
+            <li>Added real-time pilot input through a joystick mapped to elevator, aileron, rudder and throttle commands.</li>
+            <li>Evaluated stability and dynamic response for the F-16 and the De Havilland Beaver, using time-domain runs to assess controllability.</li>
+          </ul>
+          <dl class="specs">
+            <div><dt>Degrees of freedom</dt><dd class="key">6</dd></div>
+            <div><dt>Attitude kinematics</dt><dd>Euler, quaternion</dd></div>
+            <div><dt>Airframes</dt><dd>F-16, Beaver</dd></div>
+            <div><dt>Pilot channels</dt><dd>4</dd></div>
+          </dl>
+        </div>
+        <figure>
+          <div class="plate">
+            <svg viewBox="0 0 480 350" role="img" aria-label="Aircraft planform with body axes: x out the nose for roll, y out the right wing for pitch, z down for yaw.">
+              <g transform="matrix(-0.7 0.35 0.85 0.2 230 170)">
+                <g><polygon class="s-body" points="150,0 60,12 20,95 -10,95 10,12 -70,10 -90,45 -105,45 -100,0 -105,-45 -90,-45 -70,-10 10,-12 -10,-95 20,-95 60,-12"/><animateTransform attributeName="transform" type="rotate" values="-6;6;-6" keyTimes="0;0.5;1" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" dur="7s" repeatCount="indefinite"/></g>
+              </g>
+              <path class="s-accent-thin" d="M230 170L90 240M230 170L383 206M230 170V300"/>
+              <polygon class="f-accent" points="90,240 100.7,239.1 97.1,231.9"/>
+              <polygon class="f-accent" points="383,206 372.4,207.6 374.2,199.8"/>
+              <polygon class="f-accent" points="230,300 226,290 234,290"/>
+              <circle class="f-ink" cx="230" cy="170" r="3.5"/>
+              <text class="s-text-strong" x="24" y="268">x · roll φ</text>
+              <text class="s-text-strong" x="392" y="232" text-anchor="middle">y · pitch θ</text>
+              <text class="s-text-strong" x="244" y="318">z · yaw ψ</text>
+              <text class="s-text" x="24" y="30">body axes, origin at c.g.</text>
+              <text class="s-text" x="24" y="50">q = [q0 q1 q2 q3]</text>
+            </svg>
+          </div>
+          <figcaption>
+            <span>Body-axis convention the simulation tracks: three translations and three rotations about x, y and z. Generic planform, not either airframe.</span>
+          </figcaption>
+        </figure>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-text">
+          <p class="label">Hypersonic aerodynamics · UMD ENAE682</p>
+          <h3>Hypersonic Waverider Design and Optimization</h3>
+          <p class="sub">A physics-based framework that generates and optimizes a Mach 6 waverider from a conical flow field.</p>
+          <ul>
+            <li>Used Taylor-Maccoll conical flow solutions and streamline tracing to generate 3D waverider geometry and flow fields.</li>
+            <li>Estimated viscous drag with strip theory and reference temperature methods.</li>
+            <li>Ran parametric trade studies optimizing lift-to-drag ratio and volumetric efficiency.</li>
+            <li>Built the full pipeline, from geometry generation through compressible flow analysis to performance optimization, on numerical ODE solvers.</li>
+          </ul>
+          <dl class="specs">
+            <div><dt>Design point</dt><dd class="key">Mach 6</dd></div>
+            <div><dt>Shock angles</dt><dd>11°, 14°</dd></div>
+            <div><dt>Altitude</dt><dd>25 km</dd></div>
+            <div><dt>Vehicle length</dt><dd>3 m</dd></div>
+            <div><dt>Objectives</dt><dd>L/D, V<sup>2/3</sup>/S</dd></div>
+          </dl>
+        </div>
+        <figure>
+          <div class="plate">
+            <svg viewBox="0 120 480 180" role="img" aria-label="Side view of a conical shock from a generating cone, with the waverider body sitting between the cone and the shock and its leading edge on the shock.">
+              <path class="s-grid" d="M40 150H460" stroke-dasharray="2 5"/>
+              <path class="s-ink-dash" d="M40 150L460 209"/>
+              <path class="s-plot" d="M40 150L460 270.4"/>
+              <path class="s-body" d="M260 213L440 213L440 240Q340 228 260 213Z"/>
+              <circle class="f-accent" cx="260" cy="213" r="4"/>
+              <path class="s-accent-thin flow" d="M20 225H72M20 255H72"/>
+              <polygon class="f-accent" points="80,225 70,221 70,229"/>
+              <polygon class="f-accent" points="80,255 70,251 70,259"/>
+              <text class="s-text-strong" x="20" y="285">M∞ = 6</text>
+            </svg>
+          </div>
+          <figcaption>
+            <ul class="legend">
+              <li><svg viewBox="0 0 26 10" aria-hidden="true"><path class="s-plot" d="M0 5H26"/></svg>Conical shock</li>
+              <li><svg viewBox="0 0 26 10" aria-hidden="true"><path class="s-ink-dash" d="M0 5H26"/></svg>Generating cone</li>
+              <li><svg viewBox="0 0 26 10" aria-hidden="true"><rect class="s-body" x="3" y="1.5" width="20" height="7"/></svg>Waverider</li>
+              <li><svg viewBox="0 0 26 10" aria-hidden="true"><circle class="f-accent" cx="13" cy="5" r="4"/></svg>Leading edge</li>
+            </ul>
+            <span>Side-view sketch of the method: the leading edge sits on the shock, and the lower surface follows a streamline behind it. Angles are illustrative.</span>
+          </figcaption>
+        </figure>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="projects" aria-labelledby="bg-h">
+    <div class="section-head">
+      <h2 id="bg-h">Background</h2>
+    </div>
+    <div class="background">
+      <div>
+        <p class="label">July 2023 to present</p>
+        <h3>Aerospace Engineer, NSWC Carderock Division</h3>
+        <p>Python software for automated parametric NASTRAN model generation, a quaternion-based material-orientation framework for composite FEA models over 1 million elements, and hydrostatic implosion models validated against carbon fiber test data.</p>
+      </div>
+      <div>
+        <p class="label">Shock &amp; Vibration Symposium, 2026</p>
+        <h3>Conference presentation</h3>
+        <p>Composite Pressure Vessel Hydrostatic Implosion Modeling and Testing. Orlando, FL.</p>
+      </div>
+      <div>
+        <p class="label">University of Maryland</p>
+        <h3>M.Eng. Aerospace Engineering, Dec 2026</h3>
+        <p>B.S. Aerospace Engineering, May 2022. A. James Clark School of Engineering, College Park, MD.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="contact">
+    <div class="contact-item">
+      <span class="label">Email</span>
+      <span class="addr" id="email">sccoca321@gmail.com</span>
+      <button class="copy" id="copy-email" type="button">Copy</button>
+    </div>
+    <div class="contact-item">
+      <span class="label">LinkedIn</span>
+      <a href="https://www.linkedin.com/in/elio-cusi" target="_blank" rel="noopener">linkedin.com/in/elio-cusi</a>
+    </div>
+  </footer>
+
+</div>
+
+<dialog class="paper" id="paper" aria-labelledby="paper-h">
+  <div class="paper-inner">
+    <div class="paper-head">
+      <h2 id="paper-h">RRT*–MPPI: A Two-Layer Hierarchical Planner</h2>
+      <button class="copy" type="button" id="paper-close">Close</button>
+    </div>
+    <div class="paper-pages" tabindex="0">
+        <img src="paper-1.webp" width="1241" height="1754" loading="lazy" alt="Page 1 of the paper">
+        <img src="paper-2.webp" width="1241" height="1754" loading="lazy" alt="Page 2 of the paper">
+        <img src="paper-3.webp" width="1241" height="1754" loading="lazy" alt="Page 3 of the paper">
+        <img src="paper-4.webp" width="1241" height="1754" loading="lazy" alt="Page 4 of the paper">
+        <img src="paper-5.webp" width="1241" height="1754" loading="lazy" alt="Page 5 of the paper">
+        <img src="paper-6.webp" width="1241" height="1754" loading="lazy" alt="Page 6 of the paper">
+        <img src="paper-7.webp" width="1241" height="1754" loading="lazy" alt="Page 7 of the paper">
+        <img src="paper-8.webp" width="1241" height="1754" loading="lazy" alt="Page 8 of the paper">
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy-email');
+  var addr = document.getElementById('email');
+  function selectAddr() {
+    var r = document.createRange();
+    r.selectNodeContents(addr);
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+  }
+  btn.addEventListener('click', function () {
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1800); };
+    try {
+      navigator.clipboard.writeText(addr.textContent).then(done, selectAddr);
+    } catch (e) { selectAddr(); }
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Paper reader */
+  var dlg = document.getElementById('paper');
+  function openPaper() { if (dlg.showModal && !dlg.open) dlg.showModal(); }
+  document.querySelectorAll('[data-open-paper]').forEach(function (b) { b.addEventListener('click', openPaper); });
+  document.getElementById('paper-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  if (location.hash === '#paper') openPaper();
+
+  /* Count-up on first view */
+  function fmt(v, dec) { return v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        io.unobserve(en.target);
+        var el = en.target, end = parseFloat(el.dataset.count), dec = parseInt(el.dataset.dec || '0', 10), suf = el.dataset.suffix || '', t0 = null;
+        function tick(ts) {
+          if (t0 === null) t0 = ts;
+          var k = Math.min(1, (ts - t0) / 1100), e = 1 - Math.pow(1 - k, 3);
+          el.textContent = fmt(end * e, dec) + suf;
+          if (k < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-count]').forEach(function (el) { io.observe(el); });
+  }
+  if (reduce) document.querySelectorAll('svg').forEach(function (s) { if (s.pauseAnimations) s.pauseAnimations(); });
+
+  /* Live field: toy steer-around-orbiting-zones sketch */
+  var cv = document.getElementById('field'), stat = document.getElementById('field-stat');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d'), W = 0, H = 0, col = {}, radars = [], v, goal, trail, t, state, hold, trials = 0, wins = 0;
+  var last = 0, onScreen = true, raf = 0, frame = 0;
+  function colors() {
+    var s = getComputedStyle(document.documentElement);
+    ['ink', 'muted', 'line', 'accent', 'plot', 'plot-soft'].forEach(function (k) { col[k] = s.getPropertyValue('--' + k).trim(); });
+  }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function size() {
+    var r = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function reset() {
+    radars = [];
+    var n = Math.max(3, Math.min(8, Math.round(W / 130))), tries = 0;
+    while (radars.length < n && tries < 500) {
+      tries++;
+      var r = H * rnd(0.10, 0.16);
+      var c = { cx: rnd(0.16 * W, 0.86 * W), cy: rnd(r + 12, H - r - 12), r: r, orb: rnd(5, 14), w: rnd(0.5, 1.1) * (Math.random() < 0.5 ? -1 : 1), ph: rnd(0, 6.28) };
+      if (radars.every(function (o) { return Math.hypot(o.cx - c.cx, o.cy - c.cy) > o.r + c.r + o.orb + c.orb + 34; })) radars.push(c);
+    }
+    v = { x: 18, y: H * rnd(0.25, 0.75), th: 0 };
+    goal = { x: W - 22, y: H * rnd(0.3, 0.7) };
+    trail = [[v.x, v.y]]; t = 0; state = 'fly'; hold = 0;
+  }
+  function pos(o, tt) { return [o.cx + o.orb * Math.cos(o.ph + o.w * tt), o.cy + o.orb * Math.sin(o.ph + o.w * tt)]; }
+  function finish(ok, silent) {
+    state = ok ? 'win' : 'lose'; hold = 1.2;
+    if (silent) return;
+    trials++; if (ok) wins++;
+    stat.textContent = trials + (trials === 1 ? ' trial' : ' trials') + ' · ' + wins + ' reached the goal';
+  }
+  function step(dt, silent) {
+    if (state !== 'fly') { hold -= dt; if (hold <= 0 && !silent) reset(); return; }
+    t += dt;
+    var gx = goal.x - v.x, gy = goal.y - v.y, gd = Math.hypot(gx, gy) || 1, ux = gx / gd, uy = gy / gd, ax = ux, ay = uy, m = Math.max(36, H * 0.2);
+    radars.forEach(function (o) {
+      var p = pos(o, t + 0.4), dx = v.x - p[0], dy = v.y - p[1], d = Math.hypot(dx, dy) || 1, gap = d - o.r;
+      if (gap < m) {
+        var k = (m - gap) / m * 2.6, nx = dx / d, ny = dy / d, tx = -ny, ty = nx;
+        if (tx * ux + ty * uy < 0) { tx = -tx; ty = -ty; }
+        ax += nx * k + tx * k * 0.9; ay += ny * k + ty * k * 0.9;
+      }
+    });
+    if (v.y < 14) ay += (14 - v.y) / 14 * 2;
+    if (v.y > H - 14) ay -= (v.y - (H - 14)) / 14 * 2;
+    var d = Math.atan2(ay, ax) - v.th;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    var mx = 2.6 * dt; v.th += Math.max(-mx, Math.min(mx, d));
+    var sp = W / 8; v.x += Math.cos(v.th) * sp * dt; v.y += Math.sin(v.th) * sp * dt;
+    trail.push([v.x, v.y]);
+    var hit = radars.some(function (o) { var p = pos(o, t); return Math.hypot(v.x - p[0], v.y - p[1]) < o.r; });
+    if (hit || t > 24 || v.x < -10 || v.x > W + 10 || v.y < -10 || v.y > H + 10) finish(false, silent);
+    else if (gd < 12) finish(true, silent);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    radars.forEach(function (o) {
+      var p = pos(o, t);
+      ctx.setLineDash([4, 5]); ctx.lineWidth = 1; ctx.strokeStyle = col.line;
+      ctx.beginPath(); ctx.arc(p[0], p[1], o.r * 1.4, 0, 6.2832); ctx.stroke();
+      ctx.setLineDash([]); ctx.fillStyle = col['plot-soft']; ctx.strokeStyle = col.plot; ctx.lineWidth = 1.25;
+      ctx.beginPath(); ctx.arc(p[0], p[1], o.r, 0, 6.2832); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col.plot; ctx.beginPath(); ctx.arc(p[0], p[1], 2.5, 0, 6.2832); ctx.fill();
+    });
+    ctx.strokeStyle = col.accent; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(goal.x, goal.y, state === 'win' ? 11 : 7, 0, 6.2832); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(goal.x - 3, goal.y); ctx.lineTo(goal.x + 3, goal.y); ctx.moveTo(goal.x, goal.y - 3); ctx.lineTo(goal.x, goal.y + 3); ctx.stroke();
+    ctx.fillStyle = col.ink; ctx.beginPath(); ctx.arc(trail[0][0], trail[0][1], 3.5, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = col.accent; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(trail[0][0], trail[0][1]);
+    for (var i = 1; i < trail.length; i++) ctx.lineTo(trail[i][0], trail[i][1]);
+    ctx.stroke();
+    if (state === 'lose') {
+      ctx.lineWidth = 2.5; ctx.beginPath();
+      ctx.moveTo(v.x - 6, v.y - 6); ctx.lineTo(v.x + 6, v.y + 6); ctx.moveTo(v.x + 6, v.y - 6); ctx.lineTo(v.x - 6, v.y + 6); ctx.stroke();
+    } else {
+      ctx.save(); ctx.translate(v.x, v.y); ctx.rotate(v.th); ctx.fillStyle = col.ink;
+      ctx.beginPath(); ctx.moveTo(9, 0); ctx.lineTo(-6, 5); ctx.lineTo(-3, 0); ctx.lineTo(-6, -5); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+  }
+  function loop(ts) {
+    raf = 0;
+    if (!onScreen || document.hidden) return;
+    var dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
+    if (frame++ % 60 === 0) colors();
+    step(dt, false); draw();
+    raf = requestAnimationFrame(loop);
+  }
+  function start() { if (!raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(loop); } }
+  function init() {
+    size(); colors(); reset();
+    if (reduce) {
+      for (var i = 0; i < 2400 && state === 'fly'; i++) step(1 / 60, true);
+      stat.textContent = 'Still frame (reduced motion is on)';
+    } else {
+      for (var j = 0; j < 150 && state === 'fly'; j++) step(1 / 60, true);
+      if (state !== 'fly') reset();
+    }
+    draw();
+  }
+  init();
+  if ('ResizeObserver' in window) {
+    var lastW = W;
+    new ResizeObserver(function () { var w = cv.getBoundingClientRect().width; if (Math.abs(w - lastW) > 2) { lastW = w; init(); } }).observe(cv);
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; if (onScreen) start(); }).observe(cv);
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) start(); });
+  start();
+})();
+</script>
+
+<script>
+(function () {
+  var vid = document.getElementById('replay-video');
+  if (!vid) return;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var btns = document.querySelectorAll('.replay-list button');
+  function play() { var p = vid.play(); if (p && p.catch) p.catch(function () {}); }
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      btns.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      vid.poster = b.dataset.clip + '-poster.webp';
+      vid.src = b.dataset.clip + '.mp4';
+      vid.load(); play();
+    });
+  });
+  if (!reduce && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { if (es[0].isIntersecting) play(); else vid.pause(); }, { threshold: 0.4 }).observe(vid);
+  }
+})();
+</script>
+
+</body>
+</html>
