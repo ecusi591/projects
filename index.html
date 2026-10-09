@@ -193,6 +193,10 @@ dialog.paper::backdrop { background: rgba(8, 14, 22, 0.72); }
 @keyframes pulse { 50% { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { .status .dot { animation: none; } }
 
+.next { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 0.9375rem; }
+.next .status { margin-left: 0; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.next > span:last-child { min-width: 0; flex: 1 1 16rem; }
+
 /* Background */
 .background { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 28px 40px; }
 .background > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -253,6 +257,7 @@ button.copy:hover { background: var(--ink); color: var(--bg); }
           <p class="label">Guidance and motion planning</p>
           <h3>Hierarchical GNC Framework</h3>
           <p class="sub">RRT* global planning coupled with MPPI control for autonomous navigation through radar-defended airspace.</p>
+          <p class="next"><span class="status"><span class="dot" aria-hidden="true"></span>In progress</span> <span>A 6-DOF version of this framework. The results below are from the planar version in the paper.</span></p>
           <ul>
             <li>Designed a two-layer architecture: RRT* plans each global reference path offline, and MPPI re-optimizes control every 0.5 s to track it through moving threats.</li>
             <li>Simulated three missiles crossing a field of 15 orbiting radars and 3 patrol radars while evading 3 proportional-navigation interceptors.</li>
@@ -328,7 +333,7 @@ button.copy:hover { background: var(--ink); color: var(--bg); }
 
       <article class="sheet">
         <div class="sheet-text">
-          <p class="label">Flight dynamics · MATLAB/Simulink <span class="status"><span class="dot" aria-hidden="true"></span>In progress</span></p>
+          <p class="label">Flight dynamics · MATLAB/Simulink</p>
           <h3>6-DOF Flight Simulation</h3>
           <p class="sub">Nonlinear aircraft simulation built twice, once with Euler angles and once with quaternions.</p>
           <ul>
